@@ -1,0 +1,2 @@
+# MyCoreData
+Testing CoreData
