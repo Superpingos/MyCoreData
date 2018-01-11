@@ -28,6 +28,14 @@ class TableViewController: UITableViewController, NSFetchedResultsControllerDele
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         self.navigationItem.title = ""
         
+        // Available > iOS 10.0
+        let refreshTableView = UIRefreshControl()
+        refreshTableView.backgroundColor = UIColor.lightGray
+        let refreshText = NSLocalizedString("Pull to refresh", comment: "")
+        refreshTableView.attributedTitle = NSAttributedString(string: refreshText)
+        refreshTableView.addTarget(self, action: #selector(newRandomPerson), for: .valueChanged)
+        self.tableView.refreshControl = refreshTableView
+        
         frc = getFRC()
         frc.delegate = self
         
@@ -170,40 +178,6 @@ class TableViewController: UITableViewController, NSFetchedResultsControllerDele
             //print("\(#function) > Edit...")
         }
     }
-    // @deprecated
-    @IBAction func addADog(_ sender: UIBarButtonItem)
-    {
-        // Save
-        let datasCount = dataCount() + 1
-        let fullname = "Person_\(datasCount)"
-        let name = "dog_\(datasCount)"
-        let age = datasCount
-        let pId = UUID().uuidString
-        let dId = UUID().uuidString
-        
-        let personEntity = NSEntityDescription.entity(forEntityName: "Person", in: context)
-        let aPerson = Person(entity: personEntity!, insertInto: context)
-        
-        let dogEntity = NSEntityDescription.entity(forEntityName: "Dog", in: context)
-        let aDog = Dog(entity: dogEntity!, insertInto: context)
-        
-        aPerson.id_person = pId
-        aPerson.fullname = fullname
-        aPerson.addToDogs(aDog)
-        
-        aDog.id_dog = dId
-        aDog.name = name
-        aDog.age = Int32(age)
-        aDog.owner = aPerson
-        
-        do {
-            try context.save()
-        } catch {
-            let err = error as NSError
-            print("Saving err: \(err.localizedDescription)")
-        }
-    }
-    
     @IBAction func deleteAll(_ sender: UIBarButtonItem)
     {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Person")
@@ -240,7 +214,39 @@ class TableViewController: UITableViewController, NSFetchedResultsControllerDele
         let person_s = (count > 1 ? NSLocalizedString("people", comment: "") : NSLocalizedString("person", comment: ""))
         self.navigationItem.title = "\(count) \(person_s)"
         self.tableView.reloadData()
+        self.tableView.refreshControl?.endRefreshing()
         //print("\(#function) > #\(count)")
+    }
+    @objc func newRandomPerson()
+    {
+        let datasCount = dataCount() + 1
+        let fullname = "Person_\(datasCount)"
+        let name = "dog_\(datasCount)"
+        let age = datasCount
+        let pId = UUID().uuidString
+        let dId = UUID().uuidString
+        
+        let personEntity = NSEntityDescription.entity(forEntityName: "Person", in: context)
+        let aPerson = Person(entity: personEntity!, insertInto: context)
+        
+        let dogEntity = NSEntityDescription.entity(forEntityName: "Dog", in: context)
+        let aDog = Dog(entity: dogEntity!, insertInto: context)
+        
+        aPerson.id_person = pId
+        aPerson.fullname = fullname
+        aPerson.addToDogs(aDog)
+        
+        aDog.id_dog = dId
+        aDog.name = name
+        aDog.age = Int32(age)
+        aDog.owner = aPerson
+        
+        do {
+            try context.save()
+        } catch {
+            let err = error as NSError
+            print("Saving err: \(err.localizedDescription)")
+        }
     }
     /* Not used
     func getFeReCo() -> NSFetchedResultsController<NSFetchRequestResult>
