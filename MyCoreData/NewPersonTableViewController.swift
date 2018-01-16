@@ -28,6 +28,11 @@ class NewPersonTableViewController: UITableViewController, UITextFieldDelegate
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
+        self.tableView.allowsSelection = false
+        
+        let tap:UIGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard2))
+        self.view.addGestureRecognizer(tap)
+        
         if person == nil {
             self.navigationItem.title = NSLocalizedString("Add new person", comment: "")
         } else {
@@ -117,20 +122,22 @@ class NewPersonTableViewController: UITableViewController, UITextFieldDelegate
     */
     
     // MARK: - UITextFieldDelegate
-    /*func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
-        print("\(#function) > \(textField) >> \(textField.tag)")
-        let currentTag = textField.tag
-        let nextResponder = textField.superview?.viewWithTag(currentTag + 1) as? UITextField
-        
-        if currentTag != 0 {
-            nextResponder.becomeFirstResponder()
-            print("\(#function) > ")
+        if textField == pFullname {
+            textField.resignFirstResponder()
+            dName.becomeFirstResponder()
+            //print("\(#function) > Fullname")
+        } else if textField == dName {
+            textField.resignFirstResponder()
+            dAge.becomeFirstResponder()
+            //print("\(#function) > Name")
         } else {
             textField.resignFirstResponder()
+            //print("\(#function) > Age")
         }
-        return false
-    }*/
+        return true
+    }
     
     // MARK: - Custom func
     func emptyInput(inputText: UITextField)
@@ -203,13 +210,14 @@ class NewPersonTableViewController: UITableViewController, UITextFieldDelegate
             try context.save()
         } catch {
             let err = error as NSError
-            print("Saving err: \(err.localizedDescription)")
+            print("\(#function) > Saving err: \(err.localizedDescription)")
         }
         self.navigationController?.popViewController(animated: true)
         //print("\(#function)")
     }
-    @IBAction func dismissKeyboard(_ sender: UITextField)
+    @objc func dismissKeyboard2()
     {
-        self.resignFirstResponder()
+        self.view.endEditing(true)
+        //print("\(#function)")
     }
 }

@@ -13,13 +13,25 @@
         <scene sceneID="nmK-li-CAn">
             <objects>
                 <tableViewController id="OuX-dZ-LxQ" customClass="TableViewController" customModule="MyCoreData" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="fTk-n8-2iO">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="fTk-n8-2iO">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Search..." id="zX6-k4-kjB">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="56"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits" keyboardType="alphabet" returnKeyType="done"/>
+                            <scopeButtonTitles>
+                                <string>Title</string>
+                                <string>Title</string>
+                            </scopeButtonTitles>
+                            <connections>
+                                <outlet property="delegate" destination="OuX-dZ-LxQ" id="fv8-s7-ak2"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="aCell" textLabel="wWL-WQ-yd3" detailTextLabel="LKu-7M-lV5" style="IBUITableViewCellStyleSubtitle" id="mW1-SX-WqL">
-                                <rect key="frame" x="0.0" y="28" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="84" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mW1-SX-WqL" id="GFE-rr-8Bv">
                                     <rect key="frame" x="0.0" y="0.0" width="286" height="43.5"/>
@@ -63,6 +75,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="searchBar" destination="zX6-k4-kjB" id="Hwo-3y-H7c"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dys-hY-uSo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -96,9 +111,8 @@
                                                     <rect key="frame" x="110" y="7.5" width="194" height="30"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" keyboardType="alphabet" returnKeyType="next"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardType="alphabet" returnKeyType="next"/>
                                                     <connections>
-                                                        <action selector="dismissKeyboard:" destination="86g-Lr-hgQ" eventType="editingDidEndOnExit" id="ckj-dO-okE"/>
                                                         <outlet property="delegate" destination="86g-Lr-hgQ" id="GZF-7O-xzQ"/>
                                                     </connections>
                                                 </textField>
@@ -136,9 +150,8 @@
                                                     <rect key="frame" x="111" y="6" width="193" height="30"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" keyboardType="alphabet" returnKeyType="next"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardType="alphabet" returnKeyType="next"/>
                                                     <connections>
-                                                        <action selector="dismissKeyboard:" destination="86g-Lr-hgQ" eventType="editingDidEndOnExit" id="1mq-uL-jMI"/>
                                                         <outlet property="delegate" destination="86g-Lr-hgQ" id="seS-wg-t0y"/>
                                                     </connections>
                                                 </textField>
@@ -169,9 +182,8 @@
                                                     <rect key="frame" x="110" y="6" width="194" height="30"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                                    <textInputTraits key="textInputTraits" keyboardType="ASCIICapableNumberPad" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                                     <connections>
-                                                        <action selector="dismissKeyboard:" destination="86g-Lr-hgQ" eventType="editingDidEndOnExit" id="o59-sT-3vN"/>
                                                         <outlet property="delegate" destination="86g-Lr-hgQ" id="M9d-MC-T17"/>
                                                     </connections>
                                                 </textField>

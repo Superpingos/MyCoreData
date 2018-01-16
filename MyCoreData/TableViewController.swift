@@ -9,8 +9,10 @@
 import UIKit
 import CoreData
 
-class TableViewController: UITableViewController, NSFetchedResultsControllerDelegate
+class TableViewController: UITableViewController, NSFetchedResultsControllerDelegate, UISearchBarDelegate
 {
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     private var datas = [[String:Any]]()
     
     let segueEditIdentifier:String = "editPerson"
@@ -39,13 +41,6 @@ class TableViewController: UITableViewController, NSFetchedResultsControllerDele
         frc = getFRC()
         frc.delegate = self
         
-        do {
-            try frc.performFetch()
-            //print("*> \(frc)")
-        } catch {
-            print("\(error.localizedDescription)")
-            //return
-        }
         self.displayList()
     }
 
@@ -89,7 +84,9 @@ class TableViewController: UITableViewController, NSFetchedResultsControllerDele
     {
         // #warning Incomplete implementation, return the number of rows
         if let sections = frc.sections {
-            return sections[section].numberOfObjects
+            let rows = sections[section].numberOfObjects
+            //print("\(#function) > Row(s): #\(rows), section(s): \(section)")
+            return rows
         }
         return 0
     }
@@ -248,22 +245,7 @@ class TableViewController: UITableViewController, NSFetchedResultsControllerDele
             print("Saving err: \(err.localizedDescription)")
         }
     }
-    /* Not used
-    func getFeReCo() -> NSFetchedResultsController<NSFetchRequestResult>
-    {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Person")
-        let sorter = NSSortDescriptor(key: "fullname", ascending: false)
-        fetchRequest.sortDescriptors = [sorter]
-        //fetchRequest.fetchLimit = 2
-        //fetchRequest.fetchBatchSize = 20
-        //fetchRequest.returnsObjectsAsFaults = false
-     
-        let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-        
-        return frc
-    }
-    */
-    func fetchRequest() -> NSFetchRequest<NSFetchRequestResult>
+    private func fetchRequest(term: String?) -> NSFetchRequest<NSFetchRequestResult>
     {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Person")
         /**
@@ -279,6 +261,14 @@ class TableViewController: UITableViewController, NSFetchedResultsControllerDele
         //fetchRequest.predicate = NSPredicate(format: "%K beginswith[c] %@", "fullname", "m")
         //fetchRequest.predicate = NSPredicate(format: "any %K > %i", "dogs.age", 1)
         
+        if let aTerm = term, !aTerm.isEmpty {
+            var predicateArray = [NSPredicate]()
+            predicateArray.append(NSPredicate(format: "%K contains[c] %@", "fullname", aTerm))
+            predicateArray.append(NSPredicate(format: "any %K contains[c] %@", "dogs.name", aTerm))
+            let fullnameOrName = NSCompoundPredicate(orPredicateWithSubpredicates: predicateArray)
+            fetchRequest.predicate = fullnameOrName
+            //print("\(#function) > Term: \(aTerm)")
+        }
         let sorter = NSSortDescriptor(key: "fullname", ascending: false)
         fetchRequest.sortDescriptors = [sorter]
         //fetchRequest.fetchLimit = 2
@@ -288,10 +278,32 @@ class TableViewController: UITableViewController, NSFetchedResultsControllerDele
         
         return fetchRequest
     }
-    func getFRC() -> NSFetchedResultsController<NSFetchRequestResult>
+    func getFRC(searchTerm:String? = nil) -> NSFetchedResultsController<NSFetchRequestResult>
     {
-        let frc = NSFetchedResultsController(fetchRequest: fetchRequest(), managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        let frc = NSFetchedResultsController(fetchRequest: fetchRequest(term: searchTerm), managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        
+        do {
+            try frc.performFetch()
+            //print("*> \(frc)")
+        } catch {
+            print("\(error.localizedDescription)")
+            //return
+        }
         
         return frc
+    }
+    
+    // MARK: - UISearchBarDelegate
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
+    {
+        //print("\(#function):\(#line) > text: \(searchText)")
+        frc = getFRC(searchTerm: searchText)
+        self.displayList()
+    }
+    // Called when keyboard search button pressed
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
+    {
+        //print("\(#function):\(#line)")
+        searchBar.resignFirstResponder()
     }
 }
